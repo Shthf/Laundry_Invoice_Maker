@@ -1,0 +1,694 @@
+<!-- patch 1.3 -->
+<!-- This update fixed the position of subtotal, previous and Totol balance -->
+<!-- added print feature and added more items -->
+<!-- also fixed the order of items that is more comfortable to use -->
+<!-- added few drop down menus for some of the items and fixed the format when printing -->
+
+<!-- fixed a bug where delete row can not delete the first row -->
+<!-- fixed a bug where when selecting price for certain items it always set value to 35, making the total amount incorrect -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+        }
+        
+        td,
+        th {
+            border: 3px solid #dddddd;
+            text-align: left;
+            padding: 1px;
+            text-align: center;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+        
+        input {
+            width: 30%;
+            margin-right: 20px;
+        }
+        
+        .column {
+            float: left;
+            width: 50%;
+        }
+        
+        row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        
+        .center {
+            text-align: center;
+        }
+        
+        @media print {
+            button {
+                display: none;
+                /* ensure the button is hidden in print view */
+            }
+            input[type="text"],
+            input[type="number"] {
+                border: none;
+                padding: 0;
+                background: transparent;
+            }
+            select {
+                border: none;
+                padding: 0;
+                background: transparent;
+                -moz-appearance: none;
+                -webkit-appearance: none;
+                appearance: none;
+            }
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            /* Adjust as needed */
+        }
+        
+        button {
+            flex-grow: 1;
+            /* Ensures equal width distribution */
+        }
+    </style>
+
+    <SCRIPT type="text/javascript" language="javascript">
+        function addRow(tableID) {
+            var table = document.getElementById(tableID);
+
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+            var rowNum = row.Index;
+
+            var cell1 = row.insertCell(0);
+            var element1 = document.createElement("input");
+            element1.type = "checkbox";
+            element1.name = "chkbox[]";
+            cell1.appendChild(element1);
+            var ticket = document.createElement("input");
+            cell1.appendChild(ticket);
+
+            var cell2 = row.insertCell(1);
+            var element2 = document.createElement("input");
+            element2.type = "number";
+            element2.name = "itemNumber[]";
+            element2.setAttribute("oninput", "displayItemName(" + (rowCount - 1) + ");");
+            cell2.appendChild(element2);
+
+            var cell3 = row.insertCell(2);
+            var element3 = document.createElement("p");
+            element3.type = "text";
+            element3.innerHTML = "<p name='itemName[]'></p>";
+            cell3.appendChild(element3);
+
+            var cell4 = row.insertCell(3);
+            var element4 = document.createElement("p");
+            element4.type = "text";
+            element4.value = 0;
+            element4.innerHTML = "<p name='price[]'></p>";
+            cell4.appendChild(element4);
+        }
+
+
+        function deleteRow(tableID) {
+            try {
+                var table = document.getElementById(tableID);
+                var rowCount = table.rows.length;
+
+                for (var i = rowCount - 1; i >= 1; i--) { // Loop backwards to avoid index issues
+                    var row = table.rows[i];
+                    var chkbox = row.cells[0].querySelector('input[type="checkbox"]');
+
+                    if (chkbox && chkbox.checked) {
+                        table.deleteRow(i);
+                    }
+                }
+            } catch (e) {
+                alert(e);
+            }
+        }
+
+
+        function displayItemName(rowNumber) {
+
+            var itemNumber = document.getElementsByName("itemNumber[]")[rowNumber].value;
+
+            if (itemNumber == 1) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Leather Jacket";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$35";
+                document.getElementsByName("price[]")[rowNumber].value = "35";
+
+            } else if (itemNumber == 2) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Suede Jacket";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$35";
+                document.getElementsByName("price[]")[rowNumber].value = 35;
+            } else if (itemNumber == 3) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Leather Trim Jacket";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$35";
+                document.getElementsByName("price[]")[rowNumber].value = 35;
+            } else if (itemNumber == 4) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Leather&Fabric Jacket";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$35";
+                document.getElementsByName("price[]")[rowNumber].value = 35;
+            } else if (itemNumber == 5) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Fur Jacket";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$44";
+                document.getElementsByName("price[]")[rowNumber].value = 44;
+            } else if (itemNumber == 6) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Sheep Skin Jacket";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$42";
+                document.getElementsByName("price[]")[rowNumber].value = 42;
+            } else if (itemNumber == 7) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Leather Topper";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$38";
+                document.getElementsByName("price[]")[rowNumber].value = 38;
+            } else if (itemNumber == 8) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Suede Topper";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$40";
+                document.getElementsByName("price[]")[rowNumber].value = 40;
+            } else if (itemNumber == 9) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Sheep Skin Topper";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$45";
+                document.getElementsByName("price[]")[rowNumber].value = 45;
+            } else if (itemNumber == 10) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Fur Topper";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$45";
+                document.getElementsByName("price[]")[rowNumber].value = 45;
+            } else if (itemNumber == 11) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Leather Coat";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$43";
+                document.getElementsByName("price[]")[rowNumber].value = 43;
+            } else if (itemNumber == 12) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Suede Coat";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$45";
+                document.getElementsByName("price[]")[rowNumber].value = 45;
+            } else if (itemNumber == 13) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Sheep Skin Coat";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$47";
+                document.getElementsByName("price[]")[rowNumber].value = 47;
+            } else if (itemNumber == 14) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Fur Coat";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$50";
+                document.getElementsByName("price[]")[rowNumber].value = 50;
+            } else if (itemNumber == 15) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Leather Pants";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$32";
+                document.getElementsByName("price[]")[rowNumber].value = 32;
+            } else if (itemNumber == 16) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Suede Pants";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$33";
+                document.getElementsByName("price[]")[rowNumber].value = 33;
+            } else if (itemNumber == 17) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Leather Skirt";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$30";
+                document.getElementsByName("price[]")[rowNumber].value = 30;
+            } else if (itemNumber == 18) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Suede Skirt";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$30";
+                document.getElementsByName("price[]")[rowNumber].value = 30;
+            } else if (itemNumber == 19) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Leather Long Skirt";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$32";
+                document.getElementsByName("price[]")[rowNumber].value = 32;
+            } else if (itemNumber == 20) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Suede Long Skirt";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$33";
+                document.getElementsByName("price[]")[rowNumber].value = 33;
+            } else if (itemNumber == 21) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Leather Shorts";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$30";
+                document.getElementsByName("price[]")[rowNumber].value = 30;
+            } else if (itemNumber == 22) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Suede Shorts";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$30";
+                document.getElementsByName("price[]")[rowNumber].value = 30;
+            } else if (itemNumber == 23) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Sweater";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$33";
+                document.getElementsByName("price[]")[rowNumber].value = 33;
+            } else if (itemNumber == 24) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Vest";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$32";
+                document.getElementsByName("price[]")[rowNumber].value = 32;
+            } else if (itemNumber == 25) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Dress";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$42";
+                document.getElementsByName("price[]")[rowNumber].value = 42;
+            } else if (itemNumber == 26) {
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Blous";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$33";
+                document.getElementsByName("price[]")[rowNumber].value = 33;
+            } else if (itemNumber == 27) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Regular Rug";
+                var size;
+                var length = prompt("What is the length:", "");
+                var width = prompt("What is the width: ", "");
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Regular Rug(" + length + "x" + width + ")";
+                var pricePerSQFT = 1.70;
+                var priceForRug = parseFloat(parseFloat(length) * parseFloat(width) * parseFloat(pricePerSQFT)).toFixed(2);
+                if (priceForRug < 22.50) {
+                    priceForRug = parseFloat(22.50).toFixed(2);
+                    document.getElementsByName("price[]")[rowNumber].innerHTML = "$" + priceForRug + "(Minimum)";
+                } else {
+                    document.getElementsByName("price[]")[rowNumber].innerHTML = "$" + priceForRug;
+                }
+                document.getElementsByName("price[]")[rowNumber].value = parseFloat(priceForRug).toFixed(2);
+
+            } else if (itemNumber == 28) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Double Rug";
+                var size;
+                var length = prompt("What is the length:", "");
+                var width = prompt("What is the width: ", "");
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Double Rug(" + length + "x" + width + ")";
+                var pricePerSQFT = 1.90;
+                var priceForRug = parseFloat(parseFloat(length) * parseFloat(width) * parseFloat(pricePerSQFT)).toFixed(2);
+                if (priceForRug < 22.50) {
+                    priceForRug = parseFloat(22.50).toFixed(2);
+                    document.getElementsByName("price[]")[rowNumber].innerHTML = "$" + priceForRug + "(Minimum)";
+                } else {
+                    document.getElementsByName("price[]")[rowNumber].innerHTML = "$" + priceForRug;
+                }
+                document.getElementsByName("price[]")[rowNumber].value = parseFloat(priceForRug).toFixed(2);
+
+            } else if (itemNumber == 29) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Fur Matt";
+
+                var length = prompt("What is the length:", "");
+
+                var width = prompt("What is the width: ", "");
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Fur Matt(" + length + "x" + width + ")";
+                var pricePerSQFT = 3.00;
+                var priceForRug = parseFloat(parseFloat(length) * parseFloat(width) * parseFloat(pricePerSQFT)).toFixed(2);
+                if (priceForRug < 30.00) {
+                    priceForRug = parseFloat(30.00).toFixed(2);
+                    document.getElementsByName("price[]")[rowNumber].innerHTML = "$" + priceForRug + "(Minimum)";
+                } else {
+                    document.getElementsByName("price[]")[rowNumber].innerHTML = "$" + priceForRug;
+                }
+                document.getElementsByName("price[]")[rowNumber].value = parseFloat(priceForRug).toFixed(2);
+            } else if (itemNumber == 30) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Shoes(S)";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$20";
+                document.getElementsByName("price[]")[rowNumber].value = 20;
+            } else if (itemNumber == 31) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Shoes(M)";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$22";
+                document.getElementsByName("price[]")[rowNumber].value = 22;
+            } else if (itemNumber == 32) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Shoes(L)";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$24";
+                document.getElementsByName("price[]")[rowNumber].value = 24;
+            } else if (itemNumber == 33) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Boots(M)";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$24";
+                document.getElementsByName("price[]")[rowNumber].value = 24;
+            } else if (itemNumber == 34) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Boots(L)";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$26";
+                document.getElementsByName("price[]")[rowNumber].value = 26;
+            } else if (itemNumber == 35) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Boots(XL)";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$28";
+                document.getElementsByName("price[]")[rowNumber].value = 28;
+            } else if (itemNumber == 36) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Boots(Long)";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$30";
+                document.getElementsByName("price[]")[rowNumber].value = 30;
+            } else if (itemNumber == 37) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Leather Hat";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$28";
+                document.getElementsByName("price[]")[rowNumber].value = 28;
+            } else if (itemNumber == 38) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Sheep Skin Hat";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$30";
+                document.getElementsByName("price[]")[rowNumber].value = 30;
+            } else if (itemNumber == 39) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Fur Hat";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$30";
+                document.getElementsByName("price[]")[rowNumber].value = 30;
+            } else if (itemNumber == 40) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Leather Glove";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$24";
+                document.getElementsByName("price[]")[rowNumber].value = 24;
+            } else if (itemNumber == 41) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Leather Long Glove";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$26";
+                document.getElementsByName("price[]")[rowNumber].value = 26;
+            } else if (itemNumber == 42) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Sheep Skin Glove";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$28";
+                document.getElementsByName("price[]")[rowNumber].value = 28;
+            } else if (itemNumber == 43) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Fur Glove";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$28";
+                document.getElementsByName("price[]")[rowNumber].value = 28;
+            } else if (itemNumber == 44) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Leather Bag";
+                priceDropdown = document.getElementsByName("price[]")[rowNumber];
+
+                priceDropdown.innerHTML = "<select name='priceList[]'><option value=0></option><option value='30'>$30</option><option value=35>$35</option><option value=40>$40</option></select>";
+
+                priceDropdown.addEventListener('change', () => {
+                    const priceListSize = document.getElementsByName("priceList[]").length;
+                    const selectedValue = document.getElementsByName("priceList[]")[priceListSize - 1].value;
+                    priceDropdown.value = selectedValue;
+                });
+            } else if (itemNumber == 45) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Vest";
+                priceDropdown = document.getElementsByName("price[]")[rowNumber];
+
+                priceDropdown.innerHTML = "<select name='priceList[]' id='leatherBagList'><option value=0></option><option value=30>$30</option><option value=32>$32</option><option value=35>$35</option></select>";
+
+                priceDropdown.addEventListener('change', () => {
+                    const priceListSize = document.getElementsByName("priceList[]").length;
+                    const selectedValue = document.getElementsByName("priceList[]")[priceListSize - 1].value;
+                    priceDropdown.value = selectedValue;
+                });
+            } else if (itemNumber == 46) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Dress";
+                priceDropdown = document.getElementsByName("price[]")[rowNumber];
+
+                priceDropdown.innerHTML = "<select name='priceList[]' id='leatherBagList'><option value=0></option><option value=32>$32</option><option value=35>$35</option><option value=38>$38</option><option value=42>$42</option></select>";
+
+                priceDropdown.addEventListener('change', () => {
+                    const priceListSize = document.getElementsByName("priceList[]").length;
+                    const selectedValue = document.getElementsByName("priceList[]")[priceListSize - 1].value;
+                    priceDropdown.value = selectedValue;
+                });
+            } else if (itemNumber == 47) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Wool Jacket";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$35";
+                document.getElementsByName("price[]")[rowNumber].value = 35;
+            } else if (itemNumber == 48) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Wool Topper";
+                priceDropdown = document.getElementsByName("price[]")[rowNumber];
+
+                priceDropdown.innerHTML = "<select name='priceList[]' id='leatherBagList'><option value=0></option><option value=40>$40</option><option value=42>$42</option></select>";
+
+                priceDropdown.addEventListener('change', () => {
+                    const priceListSize = document.getElementsByName("priceList[]").length;
+                    const selectedValue = document.getElementsByName("priceList[]")[priceListSize - 1].value;
+                    priceDropdown.value = selectedValue;
+                });
+            } else if (itemNumber == 49) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Wool Coat";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$45";
+                document.getElementsByName("price[]")[rowNumber].value = 45;
+            } else if (itemNumber == 50) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Fur Scarf";
+                priceDropdown = document.getElementsByName("price[]")[rowNumber];
+
+                priceDropdown.innerHTML = "<select name='priceList[]' id='leatherBagList'><option value=0></option><option value=24>$24</option><option value=30>$30</option><option value=35>$35</option></select>";
+
+                priceDropdown.addEventListener('change', () => {
+                    const priceListSize = document.getElementsByName("priceList[]").length;
+                    const selectedValue = document.getElementsByName("priceList[]")[priceListSize - 1].value;
+                    priceDropdown.value = selectedValue;
+                });
+            } else if (itemNumber == 51) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Down Jacket";
+                priceDropdown = document.getElementsByName("price[]")[rowNumber];
+
+                priceDropdown.innerHTML = "<select name='priceList[]' id='leatherBagList'><option value=0></option><option value=35>$35</option><option value=40>$40</option></select>";
+
+                priceDropdown.addEventListener('change', () => {
+                    const priceListSize = document.getElementsByName("priceList[]").length;
+                    const selectedValue = document.getElementsByName("priceList[]")[priceListSize - 1].value;
+                    priceDropdown.value = selectedValue;
+                });
+            } else if (itemNumber == 52) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Down Topper";
+                priceDropdown = document.getElementsByName("price[]")[rowNumber];
+
+                priceDropdown.innerHTML = "<select name='priceList[]' id='leatherBagList'><option value=0></option><option value=42>$42</option><option value=45>$45</option></select>";
+
+                priceDropdown.addEventListener('change', () => {
+                    const priceListSize = document.getElementsByName("priceList[]").length;
+                    const selectedValue = document.getElementsByName("priceList[]")[priceListSize - 1].value;
+                    priceDropdown.value = selectedValue;
+                });
+            } else if (itemNumber == 53) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Sheep Skin Jacket";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$40";
+                document.getElementsByName("price[]")[rowNumber].value = 40;
+            } else if (itemNumber == 54) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Sheep Skin Topper";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$42";
+                document.getElementsByName("price[]")[rowNumber].value = 42;
+            } else if (itemNumber == 55) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Fur Jacket";
+                priceDropdown = document.getElementsByName("price[]")[rowNumber];
+
+                priceDropdown.innerHTML = "<select name='priceList[]' id='leatherBagList'><option value=0></option><option value=40>$40</option><option value=42>$42</option></select>";
+
+                priceDropdown.addEventListener('change', () => {
+                    const priceListSize = document.getElementsByName("priceList[]").length;
+                    const selectedValue = document.getElementsByName("priceList[]")[priceListSize - 1].value;
+                    priceDropdown.value = selectedValue;
+                });
+            } else if (itemNumber == 56) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Fur Matt";
+
+                var length = prompt("What is the length:", "");
+
+                var width = prompt("What is the width: ", "");
+
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Fur Matt(" + length + "x" + width + ")";
+                var pricePerSQFT = 2.50;
+                var priceForRug = parseFloat(parseFloat(length) * parseFloat(width) * parseFloat(pricePerSQFT)).toFixed(2);
+                if (priceForRug < 25.00) {
+                    priceForRug = parseFloat(25.00).toFixed(2);
+                    document.getElementsByName("price[]")[rowNumber].innerHTML = "$" + priceForRug + "(Minimum)";
+                } else {
+                    document.getElementsByName("price[]")[rowNumber].innerHTML = "$" + priceForRug;
+                }
+                document.getElementsByName("price[]")[rowNumber].value = parseFloat(priceForRug).toFixed(2);
+            } else if (itemNumber == 57) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Wedding Gown Box";
+                priceDropdown = document.getElementsByName("price[]")[rowNumber];
+
+                priceDropdown.innerHTML = "<select name='priceList[]' id='leatherBagList'><option value=0></option><option value=200>$200</option><option value=250>$250</option></select>";
+
+                priceDropdown.addEventListener('change', () => {
+                    const priceListSize = document.getElementsByName("priceList[]").length;
+                    const selectedValue = document.getElementsByName("priceList[]")[priceListSize - 1].value;
+                    priceDropdown.value = selectedValue;
+                });
+            } else if (itemNumber == 58) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Jacket(Regular Zipper)";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$40";
+                document.getElementsByName("price[]")[rowNumber].value = 40;
+            } else if (itemNumber == 59) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Jacket(Heavy Zipper)";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$50";
+                document.getElementsByName("price[]")[rowNumber].value = 50;
+            } else if (itemNumber == 60) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Coat(New Zipper)";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$60";
+                document.getElementsByName("price[]")[rowNumber].value = 60;
+            } else if (itemNumber == 61) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Leather Jacket";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$33";
+                document.getElementsByName("price[]")[rowNumber].value = 33;
+            } else if (itemNumber == 62) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Leather Shorts";
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$30";
+                document.getElementsByName("price[]")[rowNumber].value = 30;
+            } else if (itemNumber == 63) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Blouses";
+                priceDropdown = document.getElementsByName("price[]")[rowNumber];
+
+                priceDropdown.innerHTML = "<select name='priceList[]' id='leatherBagList'><option value=0></option><option value=30>$30</option><option value=33>$33</option></select>";
+
+                priceDropdown.addEventListener('change', () => {
+                    const priceListSize = document.getElementsByName("priceList[]").length;
+                    const selectedValue = document.getElementsByName("priceList[]")[priceListSize - 1].value;
+                    priceDropdown.value = selectedValue;
+                });
+            } else if (itemNumber == 64) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Sweater";
+                priceDropdown = document.getElementsByName("price[]")[rowNumber];
+
+                priceDropdown.innerHTML = "<select name='priceList[]' id='leatherBagList'><option value=0></option><option value=30>$30</option><option value=33>$33</option></select>";
+
+                priceDropdown.addEventListener('change', () => {
+                    const priceListSize = document.getElementsByName("priceList[]").length;
+                    const selectedValue = document.getElementsByName("priceList[]")[priceListSize - 1].value;
+                    priceDropdown.value = selectedValue;
+                });
+            } else if (itemNumber == 65) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "Shirt";
+                priceDropdown = document.getElementsByName("price[]")[rowNumber];
+
+                priceDropdown.innerHTML = "<select name='priceList[]' id='leatherBagList'><option value=0></option><option value=30>$30</option><option value=33>$33</option></select>";
+
+                priceDropdown.addEventListener('change', () => {
+                    const priceListSize = document.getElementsByName("priceList[]").length;
+                    const selectedValue = document.getElementsByName("priceList[]")[priceListSize - 1].value;
+                    priceDropdown.value = selectedValue;
+                });
+            } else if (itemNumber == 99) {
+                document.getElementsByName("itemName[]")[rowNumber].innerHTML = "OTHER";
+                var otherPrice = prompt("What is the price:", "");
+
+                document.getElementsByName("price[]")[rowNumber].innerHTML = "$" + otherPrice;
+                document.getElementsByName("price[]")[rowNumber].value = otherPrice;
+            } else {
+                alert("This is an invalid item number, please fix it!");
+            }
+        }
+
+
+        function calculateTotalPrice() {
+            var total = document.getElementsByName("price[]");
+            console.log("the total is ", total)
+
+            var sum = parseFloat(0);
+            for (var i = 0; i < total.length; i++) {
+                sum += parseFloat(total[i].value);
+            }
+
+            const subtotal = document.getElementById("subtotal");
+            subtotal.textContent = `Subtotal: $${sum}`;
+            document.getElementById("subtotal").value = sum;
+        }
+
+        function testFunction() {
+            var sum = document.getElementById("subtotal").value;
+            var pre = document.getElementById("prevBal").value;
+            var final = parseFloat((parseFloat(sum) + parseFloat(pre))).toFixed(2);
+
+            document.getElementById("finalDue").innerHTML = "Total Due: $" + final;
+
+        }
+
+        function printPage() {
+            window.print();
+        }
+
+        document.getElementById('printButton').addEventListener('click', printPage);
+    </SCRIPT>
+</head>
+
+<title>
+    Invoice Maker
+</title>
+
+<body>
+    <div class="center">
+        <h1>Han's Leather </h1>
+        <h4>464 Main Street, Islip</h4>
+        <h4>(646)272-8638</h4>
+    </div>
+
+    <div class="row">
+
+        <div class="column">
+            <!-- date display -->
+            <h3 id="dateDisplay"></h3>
+
+            <script>
+                const dateDisplay = document.getElementById("dateDisplay");
+                const today = new Date();
+
+                const formattedDate = today.toLocaleDateString("en-US");
+                dateDisplay.textContent = `Date: ${formattedDate}`;
+            </script>
+
+            <!-- account number display -->
+            <h3>Account Number:<input type="number"></h3>
+
+            <!-- name display -->
+            <h3>Account Name: <input type="text"></h3>
+        </div>
+
+        <div class="column">
+            <h3 id="subtotal">
+                Subtotal:
+            </h3>
+
+            <h3>Previous:<input type="text" id="prevBal" oninput="testFunction()"></h3>
+            <h2 id="finalDue">
+                Total Due:
+            </h2>
+        </div>
+
+    </div>
+
+    <table id="invoiceTable">
+        <thead>
+            <tr>
+                <th>Checkbox</th>
+                <th>Item Number</th>
+                <th>Item Name</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <input type="checkbox" name="chk"><input>
+                </td>
+                <td>
+                    <input type="number" name="itemNumber[]" oninput="displayItemName(0)">
+                </td>
+                <td>
+                    <p name="itemName[]"></p>
+                </td>
+                <td>
+                    <p name="price[]"></p>
+                    <!-- <select id="priceDropDown"></select> -->
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="button-container">
+        <button onclick="addRow('invoiceTable')">Add Row</button>
+        <button onclick="deleteRow('invoiceTable')">Delete Row</button>
+        <button onclick="calculateTotalPrice()">Done</button>
+        <button onclick="window.print()">Print</button>
+    </div>
+
+</body>
+
+</html>
